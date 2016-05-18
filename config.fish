@@ -23,3 +23,4 @@ set fish_greeting ""
 set -e fish_color_autosuggestion
 set fish_color_autosuggestion:red
 set -x fish_color_autosuggestion
+set -g theme_short_path no
