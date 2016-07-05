@@ -1,21 +1,13 @@
-alias ll="ls -trlaGH"
-alias ls="ls -GH"
-alias docean="ssh root@192.241.245.54"
-alias clr="clear"
-alias ..="cd .."
-alias ...="cd ../../../"
-alias ....="cd ../../../../"
-alias .....="cd ../../../../"
-alias .4="cd ../../../../"
-alias .5="cd ../../../../.."
-alias now='date +"%T"'
-alias nowtime=now
-alias nowdate='date +"%d-%m-%Y"'
-alias ports='netstat -tulanp'
+# Bring in aliases
+. ~/.config/fish/aliases.fish
 
-set fish_greeting ""
+# Path to Oh My Fish install.
+set -q XDG_DATA_HOME
+  and set -gx OMF_PATH "$XDG_DATA_HOME/omf"
+  or set -gx OMF_PATH "$HOME/.local/share/omf"
 
-set -e fish_color_autosuggestion
-set fish_color_autosuggestion red
-set -x fish_color_autosuggestion
-set -g theme_short_path no
+# Customize Oh My Fish configuration path.
+#set -gx OMF_CONFIG "/Users/joe/.config/omf"
+
+# Load oh-my-fish configuration.
+source $OMF_PATH/init.fish
