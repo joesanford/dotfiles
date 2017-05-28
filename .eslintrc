@@ -1,0 +1,142 @@
+module.exports = {
+    "env": {
+        "node": true,
+        "es6": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+    },
+    "rules": {
+        "indent": [
+            "error",
+            4
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "never"
+        ],
+        "eqeqeq": [
+            "error",
+            "always"
+        ],
+        "array-bracket-spacing": [
+            "warn",
+            "never"
+        ],
+        "brace-style": [
+            "warn",
+            "1tbs",
+            { "allowSingleLine": true }
+        ],
+        "comma-dangle": [
+            "warn",
+            "never"
+        ],
+        "comma-spacing": [
+            "warn",
+            { "before": false, "after": true }
+        ],
+        "eol-last": [
+            "warn",
+            "always"
+        ],
+        "arrow-body-style": [
+            "warn",
+            "as-needed"
+        ],
+        "arrow-parens": [
+            "warn",
+            "as-needed"
+        ],
+        "arrow-spacing": [
+            "warn",
+            { "before": true, "after": true }
+        ],
+        "no-confusing-arrow": [
+            "warn",
+            {"allowParens": true}
+        ],
+        "no-var": [
+            "error"
+        ],
+        "prefer-const": [
+            "error"
+        ],
+        "space-before-blocks": [
+            "warn",
+            { "functions": "always", "keywords": "always", "classes": "always" }
+        ],
+        "operator-assignment": [
+            "warn",
+            "always"
+        ],
+        "semi-spacing": [
+            "warn"
+        ],
+        "spaced-comment": [
+            "warn",
+            "always"
+        ],
+        "one-var-declaration-per-line": [
+            "warn",
+            "initializations"
+        ],
+        "no-unneeded-ternary": [
+            "warn"
+        ],
+        "no-dupe-keys": [
+            "error"
+        ],
+        "no-dupe-args": [
+            "error"
+        ],
+        "no-extra-semi": [
+            "error"
+        ],
+        "no-unreachable": [
+            "error"
+        ],
+        "curly": [
+            "error",
+            "all"
+        ],
+        "dot-notation": [
+            "warn"
+        ],
+        "no-extra-bind": [
+            "warn"
+        ],
+        "no-mixed-spaces-and-tabs": [
+            "warn"
+        ],
+        "no-trailing-spaces": [
+            "warn"
+        ],
+        "strict": [
+            "error",
+            "never"
+        ],
+        "no-new-object": [
+            "error"
+        ],
+        "no-array-constructor": [
+            "error"
+        ],
+        "prefer-template": [
+            "warn"
+        ],
+        "prefer-spread": [
+            "error"
+        ]
+    }
+};

@@ -43,7 +43,6 @@ alias flush "dscacheutil -flushcache"
 alias emptytrash "rm -rfv ~/.Trash"
 
 # Network Related
-
 alias localip "ipconfig getifaddr en1"
 alias ips "ifconfig -a | perl -nle'/(\d+\.\d+\.\d+\.\d+)/ and print $1'"
 alias whois "whois -h whois-servers.net"
@@ -52,15 +51,20 @@ alias whois "whois -h whois-servers.net"
 alias sniff "sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
 alias httpdump "sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 
-
+# Print timestamp
 function timestamp
     python -c 'import time; print(int(time.time()))'
 end
 
-
+# Look for an executable and if found show version(s) installed
 function wtf -d "Print which and --version output for the given command"
     for arg in $argv
         echo $arg: (which $arg)
         echo $arg: (sh -c "$arg --version")
     end
+end
+
+# Run nvm with bass
+function nvm
+     bass source ~/.nvm/nvm.sh --no-use ';' nvm $argv
 end
