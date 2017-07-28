@@ -5,7 +5,7 @@
 export ZSH=/Users/joe/.oh-my-zsh
 
 # Set theme
-ZSH_THEME="lambda"
+ZSH_THEME="nanotech"
 
 # Uncomment the following line to use hyphen-insensitive completion. Case
 # sensitive completion must be off. _ and - will be interchangeable.
