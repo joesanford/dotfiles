@@ -63,5 +63,6 @@ alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET
 # Remove username/computer name from prompt
 prompt_context() {}
 
-export NVM_DIR="/Users/joe/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+# Make NVM work
+export NVM_DIR=~/.nvm
+source $(brew --prefix nvm)/nvm.sh
