@@ -18,7 +18,7 @@ brewPackages=('git'
 	'tree'
 	'jq')
 
-caskPackages=('firefox'
+caskPackages=('google-chrome'
 	'slack'
 	'iterm2'
 	'pycharm'
