@@ -16,7 +16,8 @@ brewPackages=('git'
 	'nmap'
 	'unrar'
 	'tree'
-	'jq')
+	'jq'
+	'erlang')
 
 caskPackages=('google-chrome'
 	'slack'
@@ -37,7 +38,7 @@ caskPackages=('google-chrome'
 	'sequel-pro'
 	'sizeup'
 	'font-inconsolata'
-	'font-inconsolata-nerd-font-mono')
+	'font-hack')
 
 # Symlink all dotfiles
 for dotfile in "${dotfiles[@]}" 
@@ -55,6 +56,7 @@ for package in "${brewPackages[@]}"
 
 # Install needed programs from homebrew-cask
 brew tap caskroom/cask
+brew tap caskroom/fonts
 for package in "${caskPackages[@]}"
 	do
 		brew cask install $package
