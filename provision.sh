@@ -43,7 +43,7 @@ caskPackages=('google-chrome'
 fishPlugins=('edc/bass'
 	'nvm'
 	'fzf'
-	)
+	'docker-completion')
 
 dir=$(pwd)
 
@@ -82,6 +82,8 @@ for package in "${fishPlugins[@]}"
 	do
 		fisher $package
 	done
+
+omf install chain
 
 # Change default shell
 chsh -s /usr/local/bin/fish
