@@ -2,8 +2,7 @@
 alias j jobs
 alias l ls
 alias ll 'ls -lrlah'
-alias g git
-alias c clear
+alias clr clear
 
 # Directories
 alias cd.. 'cd ..'
@@ -35,11 +34,8 @@ alias gl "git lg"
 alias gpom "git pull origin master"
 alias grao "git remote add origin"
 
-#  Mac OS Related
-# Flush Directory Service cache
+# macOS Related
 alias flush "dscacheutil -flushcache"
-
-# Empty the Trash
 alias emptytrash "rm -rfv ~/.Trash"
 
 # Network Related
