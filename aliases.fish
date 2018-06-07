@@ -33,6 +33,7 @@ alias gcp "git cherry-pick"
 alias gl "git lg"
 alias gpom "git pull origin master"
 alias grao "git remote add origin"
+alias gpro "git pull --rebase origin master"
 
 # macOS Related
 alias flush "dscacheutil -flushcache"
