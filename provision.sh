@@ -1,29 +1,25 @@
 #!/bin/bash
-dotfiles=('.tmux.conf'
-	'.vimrc')
+dotfiles=(
+	'.zshrc'
+	'.tmux.conf'
+	'.vimrc'
+)
 
-brewPackages=('git'
-	'coreutils'
+brew_packages=(
 	'nvm'
 	'tmux'
-	'python3'
 	'reattach-to-user-namespace'
-	'fish'
 	'wget'
 	'htop'
 	'nmap'
 	'unrar'
 	'tree'
 	'jq'
-	'fzf'
-	'kubectl'
-	'erlang')
+)
 
-caskPackages=('google-chrome'
-	'slack'
+cask_apps=(
+	'google-chrome'
 	'iterm2'
-	'pycharm'
-	'webstorm'
 	'spotify'
 	'sublime-text'
 	'docker'
@@ -32,14 +28,16 @@ caskPackages=('google-chrome'
 	'istat-menus'
 	'1password'
 	'ngrok'
+	'svn'
 	'karabiner-elements'
 	'bartender'
-	'sizeup')
-
-fishPlugins=('edc/bass'
-	'nvm'
-	'fzf'
-	'docker-completion')
+	'sizeup'
+	'visual-studio-code'
+	'prusaslicer'
+	'vlc'
+	'steam'
+	'font-inconsolata-g-for-powerline'
+)
 
 dir=$(pwd)
 
@@ -55,31 +53,17 @@ rm ~/.config/fish/aliases.fish
 ln -s ${dir}/config.fish /Users/joe/.config/fish/
 ln -s ${dir}/aliases.fish /Users/joe/.config/fish/
 
-# Install needed packages with homebrew (macOS only)
+# Install packages with homebrew
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew tap homebrew/cask-fonts
 brew update
-for package in "${brewPackages[@]}"
+for package in "${brew_packages[@]}"
 	do
 		brew install $package
 	done
 
-# Install needed programs from homebrew-cask
-brew tap caskroom/cask
-brew tap caskroom/fonts
-for package in "${caskPackages[@]}"
+# Install applications with homebrew cask
+for app in "${cask_apps[@]}"
 	do
-		brew cask install $package
+		brew install --cask $app
 	done
-
-# Install oh-my-fish, fisherman, and plugins for fish shell
-curl -L https://get.oh-my.fish | fish
-curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs https://git.io/fisher
-for package in "${fishPlugins[@]}"
-	do
-		fisher $package
-	done
-
-omf install chain
-
-# Change default shell
-chsh -s /usr/local/bin/fish

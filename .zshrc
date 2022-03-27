@@ -1,33 +1,34 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
-# Path to oh-my-zsh installation.
+# Environment variables
+export SSH_KEY_PATH="~/.ssh/rsa_id"
+export PATH=/opt/homebrew/bin:$PATH
 export ZSH=/Users/joe/.oh-my-zsh
 
-# Set theme
-ZSH_THEME="candy"
-
-# Uncomment the following line to use hyphen-insensitive completion. Case
-# sensitive completion must be off. _ and - will be interchangeable.
+# ZSH Settings
+ZSH_THEME="agnoster"
 HYPHEN_INSENSITIVE="true"
-
-# Plugins
+ZSH_DISABLE_COMPFIX=true
 plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
-# ssh
-export SSH_KEY_PATH="~/.ssh/rsa_id"
-
-# Aliases
+# Misc Aliases
+alias ..="cd .."
+alias ...="cd ../../../"
+alias ....="cd ../../../../"
+alias .....="cd ../../../../"
+alias .4="cd ../../../../"
+alias .5="cd ../../../../.."
+alias path='echo -e ${PATH//:/\\n}'
+alias now='date +"%T"'
 alias zshconfig="atom ~/.zshrc"
 alias ohmyzsh="atom ~/.oh-my-zsh"
 alias j="jobs"
 alias ll="ls -trlah"
+alias flush="dscacheutil -flushcache"
+alias emptytrash="rm -rfv ~/.Trash"
 
-# Git
-alias undopush="git push -f origin HEAD^:master"
+# Git aliases
+alias undopush="git push -f origin HEAD^:main"
 alias gd="git diff"
 alias gdc="git diff --cached"
 alias ga="git add"
@@ -46,12 +47,8 @@ alias gco="git checkout"
 alias gba="git branch -a"
 alias gcp="git cherry-pick"
 alias gl="git lg"
-alias gpom="git pull origin master"
+alias gpom="git pull origin main"
 alias grao="git remote add origin"
-
-#  macOS
-alias flush="dscacheutil -flushcache"
-alias emptytrash="rm -rfv ~/.Trash"
 
 # Networking
 alias localip="ipconfig getifaddr en1"
@@ -60,9 +57,7 @@ alias whois="whois -h whois-servers.net"
 alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
 alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 
-# Remove username/computer name from prompt
-prompt_context() {}
-
-# Make NVM work
-export NVM_DIR=~/.nvm
-source $(brew --prefix nvm)/nvm.sh
+# Load nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"
+[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"
