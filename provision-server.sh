@@ -5,7 +5,7 @@
 # are a macOS-workstation concern, see provision.sh.
 
 dotfiles=(
-	'.bash_profile'
+	'.bashrc'
 	'.tmux.conf'
 	'.vimrc'
 )
@@ -16,3 +16,7 @@ for dotfile in "${dotfiles[@]}"
 	do
 		ln -sf "$dir/$dotfile" ~/
 	done
+
+# SSH login shells read ~/.profile, not ~/.bashrc directly -- make sure it
+# gets picked up on login, not just on interactive subshells.
+grep -qF '.bashrc' ~/.profile 2>/dev/null || echo '[ -f ~/.bashrc ] && . ~/.bashrc' >> ~/.profile

@@ -3,4 +3,4 @@ Configurations for `zsh`, `tmux`, `iterm`, `bash`, as well as a default `eslint`
 
 To provision a new Mac (symlinks dotfiles, installs Homebrew packages/casks), run `bash provision.sh`.
 
-To provision a headless Linux box (symlinks `.bash_profile`, `.tmux.conf`, `.vimrc` only, no package installs), run `bash provision-server.sh`.
+To provision a headless Linux box (symlinks `.bashrc`, `.tmux.conf`, `.vimrc` only, no package installs), run `bash provision-server.sh`.
