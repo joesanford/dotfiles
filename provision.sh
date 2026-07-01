@@ -39,23 +39,18 @@ cask_apps=(
 	'font-inconsolata-g-for-powerline'
 )
 
-dir=$(pwd)
+dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Symlink all dotfiles
-for dotfile in "${dotfiles[@]}" 
+# Symlink all dotfiles (-f makes this safe to rerun)
+for dotfile in "${dotfiles[@]}"
     do
-        ln -s $dir$dotfile ~/
+        ln -sf "$dir/$dotfile" ~/
     done
 
-# fish shell pre-populates these files
-rm ~/.config/fish/config.fish
-rm ~/.config/fish/aliases.fish
-ln -s ${dir}/config.fish /Users/joe/.config/fish/
-ln -s ${dir}/aliases.fish /Users/joe/.config/fish/
-
-# Install packages with homebrew
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-brew tap homebrew/cask-fonts
+# Install Homebrew if missing
+if ! command -v brew &>/dev/null; then
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
 brew update
 for package in "${brew_packages[@]}"
 	do
