@@ -1,13 +1,12 @@
 # Environment variables
 export SSH_KEY_PATH="~/.ssh/rsa_id"
-export PATH=/opt/homebrew/bin:$PATH
-export ZSH=/Users/joe/.oh-my-zsh
+export ZSH=/usr/share/oh-my-zsh
 
 # ZSH Settings
 ZSH_THEME="agnoster"
 HYPHEN_INSENSITIVE="true"
 ZSH_DISABLE_COMPFIX=true
-plugins=(git)
+plugins=(git fzf)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -20,12 +19,12 @@ alias .4="cd ../../../../"
 alias .5="cd ../../../../.."
 alias path='echo -e ${PATH//:/\\n}'
 alias now='date +"%T"'
-alias zshconfig="atom ~/.zshrc"
-alias ohmyzsh="atom ~/.oh-my-zsh"
+alias zshconfig="vim ~/.zshrc"
+alias ohmyzsh="vim \$ZSH"
 alias j="jobs"
 alias ll="ls -trlah"
-alias flush="dscacheutil -flushcache"
-alias emptytrash="rm -rfv ~/.Trash"
+alias tb="ncat termbin.com 9999"
+alias jctl="journalctl -p 3 -xb"
 
 # Git aliases
 alias undopush="git push -f origin HEAD^:main"
@@ -51,11 +50,12 @@ alias gpom="git pull origin main"
 alias grao="git remote add origin"
 
 # Networking
-alias localip="ipconfig getifaddr en1"
-alias ips="ifconfig -a | perl -nle'/(\d+\.\d+\.\d+\.\d+)/ and print $1'"
+netiface() { ip route | awk '/default/ {print $5; exit}'; }
+alias localip="ip -4 addr show scope global | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | head -1"
+alias ips="ip -4 -o addr show | awk '{print \$2, \$4}'"
 alias whois="whois -h whois-servers.net"
-alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
-alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+alias sniff="sudo ngrep -d \$(netiface) -t '^(GET|POST) ' 'tcp and port 80'"
+alias httpdump="sudo tcpdump -i \$(netiface) -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 
 # Pyenv
 export PYENV_ROOT="$HOME/.pyenv"
@@ -69,5 +69,9 @@ eval "$(pyenv virtualenv-init -)"
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
+<<<<<<< Updated upstream
   [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
   [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completionexport PATH="$HOME/.local/bin:$PATH"
+=======
+[ -s "/usr/share/nvm/init-nvm.sh" ] && . "/usr/share/nvm/init-nvm.sh"
+>>>>>>> Stashed changes
