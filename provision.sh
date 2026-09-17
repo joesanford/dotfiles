@@ -11,9 +11,6 @@ dotfiles=(
 config_dotfiles=(
 	'kitty/kitty.conf'
 	'kitty/colors.conf'
-	'kitty/hyde.conf'
-	'kitty/theme.conf'
-	'kitty/current-theme.conf'
 )
 
 # KDE Plasma settings (look/theme, panels, shortcuts). Source lives under
@@ -104,6 +101,7 @@ pacman_packages=(
 	'subversion'
 	'nvm'
 	'ttf-jetbrains-mono-nerd'
+	'ttf-cascadia-mono-nerd'
 )
 
 # GUI apps available in the official repos
