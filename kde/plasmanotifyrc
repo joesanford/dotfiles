@@ -1,0 +1,12 @@
+[Applications][app.bluebubbles.BlueBubbles]
+Seen=true
+
+[Applications][discord]
+Seen=true
+
+[Applications][firefox]
+Seen=true
+
+[Notifications]
+PopupPosition=TopRight
+ShowPopupTimeout=false
