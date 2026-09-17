@@ -46,6 +46,7 @@ misc_dotfiles=(
 	'gtkrc-2.0'
 	'QtProject.conf'
 	'mimeapps.list'
+	'klaunchrc'
 )
 
 # Whole directories under ~/.config/<name>, symlinked as a unit rather than
