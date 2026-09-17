@@ -187,7 +187,6 @@ precipitationUnit=in
 pressureUnit=inHg
 savedLocations=[{"name":"Marlborough, United States","lat":42.3491,"lon":-71.5431,"altitude":134,"timezone":"America/New_York","countryCode":"US","starred":true}]
 simpleFontAutoSz=10
-simpleFontSizeManual=12
 simpleFontSizeMode=manual
 simpleIconAutoSz=18
 simpleIconSizeMode=auto
