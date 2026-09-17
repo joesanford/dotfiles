@@ -16,6 +16,28 @@ config_dotfiles=(
 	'kitty/current-theme.conf'
 )
 
+# KDE Plasma settings (look/theme, panels, shortcuts). Source lives under
+# kde/<name>, but each targets $HOME/.config/<name> directly (not nested).
+kde_dotfiles=(
+	'kdeglobals'
+	'plasma-org.kde.plasma.desktop-appletsrc'
+	'kwinrc'
+	'plasmarc'
+	'plasmashellrc'
+	'plasmaparc'
+	'plasmanotifyrc'
+	'kglobalshortcutsrc'
+	'dolphinrc'
+	'kscreenlockerrc'
+	'ksmserverrc'
+	'plasma-localerc'
+)
+
+# Files that live under ~/.local/share/<path>.
+local_share_dotfiles=(
+	'user-places.xbel'
+)
+
 # Base CLI tools - always want these on any machine
 pacman_packages=(
 	'git'
@@ -83,6 +105,29 @@ for config_dotfile in "${config_dotfiles[@]}"; do
 		echo "Backed up existing $target to $target.bak"
 	fi
 	ln -s "$dir/$config_dotfile" "$target"
+done
+
+for kde_dotfile in "${kde_dotfiles[@]}"; do
+	target="$HOME/.config/$kde_dotfile"
+	if [ -L "$target" ]; then
+		rm "$target"
+	elif [ -e "$target" ]; then
+		mv "$target" "$target.bak"
+		echo "Backed up existing $target to $target.bak"
+	fi
+	ln -s "$dir/kde/$kde_dotfile" "$target"
+done
+
+for local_share_dotfile in "${local_share_dotfiles[@]}"; do
+	target="$HOME/.local/share/$local_share_dotfile"
+	mkdir -p "$(dirname "$target")"
+	if [ -L "$target" ]; then
+		rm "$target"
+	elif [ -e "$target" ]; then
+		mv "$target" "$target.bak"
+		echo "Backed up existing $target to $target.bak"
+	fi
+	ln -s "$dir/local-share/$local_share_dotfile" "$target"
 done
 
 # Install base + GUI packages from official repos
