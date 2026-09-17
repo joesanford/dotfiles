@@ -71,6 +71,15 @@ aur_packages=(
 	'plasma6-applets-panel-colorizer'
 )
 
+# System-wide files that aren't owned by any package, so they get installed
+# with `install` rather than symlinked (symlinking into /usr from $HOME is
+# fragile — breaks if home isn't mounted yet, and /usr should only contain
+# files the package manager or root explicitly placed there).
+# Format: "source relative to this repo:destination path".
+system_files=(
+	'assets/archlinux-logo-white.svg:/usr/share/pixmaps/archlinux-logo-white.svg'
+)
+
 # Base CLI tools - always want these on any machine
 pacman_packages=(
 	'git'
@@ -213,3 +222,9 @@ if ! command -v yay &>/dev/null; then
 	rm -rf /tmp/yay-bin
 fi
 yay -S --needed --noconfirm "${aur_packages[@]}"
+
+for system_file in "${system_files[@]}"; do
+	src="${system_file%%:*}"
+	dest="${system_file#*:}"
+	sudo install -Dm644 "$dir/$src" "$dest"
+done
