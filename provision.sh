@@ -57,6 +57,21 @@ config_dir_dotfiles=(
 	'gtk-3.0'
 	'gtk-4.0'
 	'xsettingsd'
+	'panel-colorizer'
+)
+
+# Plasmoids not available as a distro/AUR package (installed via KDE's "Get
+# New Widgets"). Source lives under plasmoids/<id>, symlinked as a unit to
+# $HOME/.local/share/plasma/plasmoids/<id>. Their settings travel separately
+# inside plasma-org.kde.plasma.desktop-appletsrc (see kde_dotfiles above).
+plasmoid_dotfiles=(
+	'io.github.kevinbudz.quickclock'
+	'org.kde.plasma.advanced-weather-widget'
+)
+
+# AUR packages, installed via yay (bootstrapped below if missing).
+aur_packages=(
+	'plasma6-applets-panel-colorizer'
 )
 
 # Base CLI tools - always want these on any machine
@@ -100,6 +115,7 @@ pacman_gui_packages=(
 	'docker'
 	'docker-compose'
 	'prusa-slicer'
+	'papirus-icon-theme'
 )
 
 dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -173,8 +189,29 @@ for config_dir_dotfile in "${config_dir_dotfiles[@]}"; do
 	ln -s "$dir/$config_dir_dotfile" "$target"
 done
 
+for plasmoid_dotfile in "${plasmoid_dotfiles[@]}"; do
+	target="$HOME/.local/share/plasma/plasmoids/$plasmoid_dotfile"
+	mkdir -p "$(dirname "$target")"
+	if [ -L "$target" ]; then
+		rm "$target"
+	elif [ -e "$target" ]; then
+		mv "$target" "$target.bak"
+		echo "Backed up existing $target to $target.bak"
+	fi
+	ln -s "$dir/plasmoids/$plasmoid_dotfile" "$target"
+done
+
 # Install base + GUI packages from official repos
 sudo pacman -Syu --needed --noconfirm "${pacman_packages[@]}" "${pacman_gui_packages[@]}"
 
 # Let the current user run docker without sudo
 sudo usermod -aG docker "$USER"
+
+# Bootstrap yay if it isn't already installed, then install AUR packages
+if ! command -v yay &>/dev/null; then
+	sudo pacman -S --needed --noconfirm base-devel
+	git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin
+	(cd /tmp/yay-bin && makepkg -si --noconfirm)
+	rm -rf /tmp/yay-bin
+fi
+yay -S --needed --noconfirm "${aur_packages[@]}"
