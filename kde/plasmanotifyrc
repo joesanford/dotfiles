@@ -10,3 +10,7 @@ Seen=true
 [Notifications]
 PopupPosition=TopRight
 ShowPopupTimeout=false
+
+[Services][donationmessage]
+ShowInHistory=false
+ShowPopups=false
