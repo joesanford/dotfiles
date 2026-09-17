@@ -33,9 +33,30 @@ kde_dotfiles=(
 	'plasma-localerc'
 )
 
+# Extend config_dotfiles for yay, which lives in its own subdir like kitty.
+config_dotfiles+=('yay/config.json')
+
 # Files that live under ~/.local/share/<path>.
 local_share_dotfiles=(
 	'user-places.xbel'
+)
+
+# GTK/Qt look-and-feel and misc app settings that don't have a natural
+# subdir of their own. Source lives under misc/<name>, targets
+# $HOME/.config/<name> directly.
+misc_dotfiles=(
+	'gtkrc'
+	'gtkrc-2.0'
+	'QtProject.conf'
+	'mimeapps.list'
+)
+
+# Whole directories under ~/.config/<name>, symlinked as a unit rather than
+# file-by-file (e.g. GTK theme CSS + its asset SVGs).
+config_dir_dotfiles=(
+	'gtk-3.0'
+	'gtk-4.0'
+	'xsettingsd'
 )
 
 # Base CLI tools - always want these on any machine
@@ -128,6 +149,28 @@ for local_share_dotfile in "${local_share_dotfiles[@]}"; do
 		echo "Backed up existing $target to $target.bak"
 	fi
 	ln -s "$dir/local-share/$local_share_dotfile" "$target"
+done
+
+for misc_dotfile in "${misc_dotfiles[@]}"; do
+	target="$HOME/.config/$misc_dotfile"
+	if [ -L "$target" ]; then
+		rm "$target"
+	elif [ -e "$target" ]; then
+		mv "$target" "$target.bak"
+		echo "Backed up existing $target to $target.bak"
+	fi
+	ln -s "$dir/misc/$misc_dotfile" "$target"
+done
+
+for config_dir_dotfile in "${config_dir_dotfiles[@]}"; do
+	target="$HOME/.config/$config_dir_dotfile"
+	if [ -L "$target" ]; then
+		rm "$target"
+	elif [ -e "$target" ]; then
+		mv "$target" "$target.bak"
+		echo "Backed up existing $target to $target.bak"
+	fi
+	ln -s "$dir/$config_dir_dotfile" "$target"
 done
 
 # Install base + GUI packages from official repos
