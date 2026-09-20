@@ -15,6 +15,7 @@ NightTemperature=5700
 kwin_gesturesEnabled=true
 screenedgeEnabled=false
 shakecursorEnabled=false
+startupfeedbackEnabled=false
 zoomEnabled=false
 
 [Tiling][89005d6c-bb76-4b69-a8b4-801679048974][37fb3efd-5720-4c45-b555-538ab3142cbb]
@@ -32,6 +33,9 @@ tiles={"layoutDirection":"horizontal","tiles":[{"width":0.25},{"width":0.5},{"wi
 [Tiling][89005d6c-bb76-4b69-a8b4-801679048974][67063ed9-1e56-4295-a2fa-559357f911c9]
 padding=4
 tiles={"layoutDirection":"horizontal","tiles":[{"width":0.25},{"width":0.5},{"width":0.25}]}
+
+[Wayland]
+EnablePrimarySelection=false
 
 [Windows]
 FocusStealingPreventionLevel=0
