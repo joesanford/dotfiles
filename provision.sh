@@ -70,6 +70,7 @@ plasmoid_dotfiles=(
 # AUR packages, installed via yay (bootstrapped below if missing).
 aur_packages=(
 	'plasma6-applets-panel-colorizer'
+	'bluebubbles-bin'
 )
 
 # System-wide files that aren't owned by any package, so they get installed
