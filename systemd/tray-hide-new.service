@@ -1,0 +1,12 @@
+[Unit]
+Description=Hide new KDE system tray items by default
+After=plasma-plasmashell.service
+PartOf=graphical-session.target
+
+[Service]
+ExecStart=%h/.local/bin/tray-hide-new
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target

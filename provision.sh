@@ -67,6 +67,18 @@ plasmoid_dotfiles=(
 	'org.kde.plasma.advanced-weather-widget'
 )
 
+# Personal scripts. Source lives under bin/<name>, symlinked to
+# $HOME/.local/bin/<name>.
+local_bin_dotfiles=(
+	'tray-hide-new'
+)
+
+# systemd user units. Source lives under systemd/<name>, symlinked to
+# $HOME/.config/systemd/user/<name> and enabled.
+systemd_user_units=(
+	'tray-hide-new.service'
+)
+
 # AUR packages, installed via yay (bootstrapped below if missing).
 aur_packages=(
 	'plasma6-applets-panel-colorizer'
@@ -113,6 +125,9 @@ pacman_packages=(
 	'nvm'
 	'ttf-jetbrains-mono-nerd'
 	'ttf-cascadia-mono-nerd'
+	# Needed by bin/tray-hide-new
+	'python-dbus'
+	'python-gobject'
 )
 
 # GUI apps available in the official repos
@@ -210,6 +225,30 @@ for plasmoid_dotfile in "${plasmoid_dotfiles[@]}"; do
 	ln -s "$dir/plasmoids/$plasmoid_dotfile" "$target"
 done
 
+for local_bin_dotfile in "${local_bin_dotfiles[@]}"; do
+	target="$HOME/.local/bin/$local_bin_dotfile"
+	mkdir -p "$(dirname "$target")"
+	if [ -L "$target" ]; then
+		rm "$target"
+	elif [ -e "$target" ]; then
+		mv "$target" "$target.bak"
+		echo "Backed up existing $target to $target.bak"
+	fi
+	ln -s "$dir/bin/$local_bin_dotfile" "$target"
+done
+
+for systemd_user_unit in "${systemd_user_units[@]}"; do
+	target="$HOME/.config/systemd/user/$systemd_user_unit"
+	mkdir -p "$(dirname "$target")"
+	if [ -L "$target" ]; then
+		rm "$target"
+	elif [ -e "$target" ]; then
+		mv "$target" "$target.bak"
+		echo "Backed up existing $target to $target.bak"
+	fi
+	ln -s "$dir/systemd/$systemd_user_unit" "$target"
+done
+
 # Install base + GUI packages from official repos
 sudo pacman -Syu --needed --noconfirm "${pacman_packages[@]}" "${pacman_gui_packages[@]}"
 
@@ -230,3 +269,7 @@ for system_file in "${system_files[@]}"; do
 	dest="${system_file#*:}"
 	sudo install -Dm644 "$dir/$src" "$dest"
 done
+
+# Enable user units now that their dependencies are installed
+systemctl --user daemon-reload
+systemctl --user enable --now "${systemd_user_units[@]}"

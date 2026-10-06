@@ -7,6 +7,6 @@ alwaysShowClock=false
 
 [Greeter][Wallpaper][org.kde.image][General]
 DynamicMode=2
-Image=file:///usr/share/wallpapers/cachyos-wallpapers/BlueFeathers.png
-PreviewImage=file:///usr/share/wallpapers/cachyos-wallpapers/BlueFeathers.png
+Image=file:///home/joe/.local/share/wallpapers/Ant-Dark-wallpapers/Ant-Dark.jpg
+PreviewImage=file:///home/joe/.local/share/wallpapers/Ant-Dark-wallpapers/Ant-Dark.jpg
 SlidePaths=/home/joe/.local/share/wallpapers/,/usr/share/wallpapers/

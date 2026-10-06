@@ -7,6 +7,9 @@ Seen=true
 [Applications][firefox]
 Seen=true
 
+[Applications][slack]
+Seen=true
+
 [Notifications]
 PopupPosition=TopRight
 ShowPopupTimeout=false

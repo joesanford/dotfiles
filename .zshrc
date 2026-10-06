@@ -25,6 +25,7 @@ alias j="jobs"
 alias ll="ls -trlah"
 alias tb="ncat termbin.com 9999"
 alias jctl="journalctl -p 3 -xb"
+alias open="xdg-open"
 
 # Git aliases
 alias undopush="git push -f origin HEAD^:main"

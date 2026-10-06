@@ -1,0 +1,182 @@
+#!/usr/bin/env python3
+"""Make new KDE system tray items default to "Always hidden" (popup only).
+
+Plasma has no setting for this (KDE bug 488156). This daemon watches the
+StatusNotifierWatcher for newly registered tray items, and when it sees an
+item ID it has never seen before, adds that ID to hiddenItems in every
+system tray applet via Plasma's scripting interface (applies live).
+
+Apps that pick a random ID on every launch (e.g. BlueBubbles/Electron) are
+handled too: each new ID is hidden, and the previous ID from the same
+program is removed from hiddenItems so the list doesn't grow forever.
+
+Items you later change in the tray settings are left alone, because their
+ID is already recorded as seen.
+"""
+import json
+import os
+import sys
+
+import dbus
+import dbus.mainloop.glib
+from gi.repository import GLib
+
+STATE = os.path.join(
+    os.environ.get("XDG_STATE_HOME", os.path.expanduser("~/.local/state")),
+    "tray-hide-new.json",
+)
+SNI = "org.kde.StatusNotifierItem"
+WATCHER = "org.kde.StatusNotifierWatcher"
+
+bus = None
+# {"seen": [ids...], "last_by_prog": {prog: id}}
+state = {"seen": [], "last_by_prog": {}}
+
+
+def log(*a):
+    print(*a, flush=True)
+
+
+def load_state():
+    global state
+    try:
+        with open(STATE) as f:
+            state = json.load(f)
+        return True
+    except FileNotFoundError:
+        return False
+
+
+def save_state():
+    os.makedirs(os.path.dirname(STATE), exist_ok=True)
+    tmp = STATE + ".tmp"
+    with open(tmp, "w") as f:
+        json.dump(state, f, indent=1)
+    os.replace(tmp, STATE)
+
+
+def plasma_eval(script):
+    shell = bus.get_object("org.kde.plasmashell", "/PlasmaShell")
+    return str(shell.evaluateScript(script, dbus_interface="org.kde.PlasmaShell"))
+
+
+def update_hidden(add=(), remove=()):
+    """Add/remove IDs in hiddenItems of every system tray applet."""
+    script = """
+var add = %s, remove = %s;
+panels().forEach(function (p) {
+  p.widgets("org.kde.plasma.systemtray").forEach(function (w) {
+    w.currentConfigGroup = ["General"];
+    var shown = w.readConfig("shownItems", []);
+    var hidden = w.readConfig("hiddenItems", []).filter(function (x) {
+      return remove.indexOf(x) < 0;
+    });
+    add.forEach(function (x) {
+      if (hidden.indexOf(x) < 0 && shown.indexOf(x) < 0) hidden.push(x);
+    });
+    w.writeConfig("hiddenItems", hidden);
+  });
+});
+""" % (json.dumps(list(add)), json.dumps(list(remove)))
+    return plasma_eval(script)
+
+
+def parse_service(service):
+    service = str(service)
+    if "/" in service:
+        name, path = service.split("/", 1)
+        return name, "/" + path
+    return service, "/StatusNotifierItem"
+
+
+def item_info(service):
+    name, path = parse_service(service)
+    obj = bus.get_object(name, path)
+    item_id = str(obj.Get(SNI, "Id", dbus_interface="org.freedesktop.DBus.Properties"))
+    prog = ""
+    try:
+        dbus_obj = bus.get_object("org.freedesktop.DBus", "/org/freedesktop/DBus")
+        pid = int(dbus_obj.GetConnectionUnixProcessID(name, dbus_interface="org.freedesktop.DBus"))
+        with open(f"/proc/{pid}/comm") as f:
+            prog = f.read().strip()
+    except Exception:
+        pass
+    if not prog:
+        try:
+            prog = str(obj.Get(SNI, "Title", dbus_interface="org.freedesktop.DBus.Properties"))
+        except Exception:
+            pass
+    return item_id, prog
+
+
+def handle(service, attempt=0):
+    try:
+        item_id, prog = item_info(service)
+    except dbus.DBusException as e:
+        # Item may not have exported its properties yet; retry briefly.
+        if attempt < 5:
+            GLib.timeout_add(500, lambda: handle(service, attempt + 1) and False)
+        else:
+            log(f"giving up on {service}: {e}")
+        return False
+    if not item_id or item_id in state["seen"]:
+        return False
+
+    remove = []
+    old = state["last_by_prog"].get(prog) if prog else None
+    if old and old != item_id:
+        remove.append(old)  # same program, new random ID: drop the stale one
+    try:
+        update_hidden(add=[item_id], remove=remove)
+    except dbus.DBusException as e:
+        log(f"plasmashell not reachable, will retry {item_id}: {e}")
+        GLib.timeout_add_seconds(5, lambda: handle(service) and False)
+        return False
+
+    state["seen"] = [x for x in state["seen"] if x not in remove] + [item_id]
+    if prog:
+        state["last_by_prog"][prog] = item_id
+    save_state()
+    log(f"hid new tray item {item_id!r} ({prog})" + (f", removed stale {old!r}" if remove else ""))
+    return False
+
+
+def registered_items():
+    w = bus.get_object(WATCHER, "/StatusNotifierWatcher")
+    return w.Get(WATCHER, "RegisteredStatusNotifierItems",
+                 dbus_interface="org.freedesktop.DBus.Properties")
+
+
+def main():
+    global bus
+    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+    bus = dbus.SessionBus()
+
+    if not load_state():
+        # First run: treat everything already in the tray as known, so
+        # existing choices aren't overridden. Only future items get hidden.
+        for s in registered_items():
+            try:
+                item_id, prog = item_info(s)
+            except dbus.DBusException:
+                continue
+            state["seen"].append(item_id)
+            if prog:
+                state["last_by_prog"][prog] = item_id
+        save_state()
+        log(f"initialised with {len(state['seen'])} existing items")
+
+    bus.add_signal_receiver(
+        lambda s: handle(s) and False,
+        signal_name="StatusNotifierItemRegistered",
+        dbus_interface=WATCHER,
+    )
+    # Catch anything that registered before we started (e.g. at login).
+    for s in registered_items():
+        handle(s)
+
+    GLib.MainLoop().run()
+
+
+if __name__ == "__main__":
+    sys.exit(main())
